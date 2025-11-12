@@ -17,7 +17,12 @@ Write at the end. Summarize the study.
 
 # BACKGROUND
 
-Write like a funnel from general to specific
+Asthma is a chronic lung condition that can cause the airways to become inflamed at times making it harder to breathe. It is a very common condition in the United States. According to the CDC, about 1 in 13 people have asthma in the United States (CDC, 2025). Asthma symptoms can be triggered by many things, including pollen, exercise, cold air, or air pollution.
+
+Air pollution can increase the risk of developing asthma and as well as making symptoms worse if a person already has asthma. The airborne particles that causes air pollution can irritate airways which triggers asthma symptoms (Asthma and Allergy Foundation of America). 
+
+There is typically more air pollution in more highly populated regions. For this reason, we hypothesize that more urbanized regions with higher population density will be associated with higher asthma prevalence. The Northeastern United States are more highly populated than the West, so we predict that the Northeast will have a higher asthma prevalence.
+
 ```{r data for map, include=FALSE}
 
 asthma_data <- data.frame(
@@ -214,12 +219,9 @@ This bar plot supports our prediction that the Northeast would have the highest 
 1. ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions
     such as ggplot(), creating the map and troubleshooting error messages. Accessed 2025-11-10.
 2. Centers for Disease Control and Prevention. (2024, November 21). Most recent asthma data. U.S. Department of Health and Human Services. https://www.cdc.gov/asthma-data/about/most-recent-asthma-data.html
+3. National Heart, Lung, and Blood Institute. (2025). Asthma. U.S. Department of Health and Human Services. https://www.nhlbi.nih.gov/health/asthma
+4. Asthma and Allergy Foundation of America. (n.d.). Air pollution and asthma. Asthma & Allergy Foundation of America. https://aafa.org/asthma/asthma-triggers-causes/air-pollution-smog-asthma/
 
-Look into these as possible sources
-https://pmc.ncbi.nlm.nih.gov/articles/PMC3620776/?utm_source=chatgpt.com
-https://pmc.ncbi.nlm.nih.gov/articles/PMC3620776/?utm_source=chatgpt.com
-https://pubmed.ncbi.nlm.nih.gov/34606402/
-https://ij-healthgeographics.biomedcentral.com/articles/10.1186/s12942-023-00343-6?utm_source=chatgpt.com
 
 
 
