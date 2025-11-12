@@ -11,7 +11,8 @@ Whitney Crook
   - [Prediction](#prediction)
 - [METHODS](#methods)
   - [Procedure](#procedure)
-  - [Asthma Prevalence by State](#asthma-prevalence-by-state)
+  - [Bar Plot Showing Asthma Prevalence by
+    State](#bar-plot-showing-asthma-prevalence-by-state)
   - [Scatter Plot by State](#scatter-plot-by-state)
   - [Box Plot for Asthma Prevalence by
     Region](#box-plot-for-asthma-prevalence-by-region)
@@ -28,7 +29,23 @@ Write at the end. Summarize the study.
 
 # BACKGROUND
 
-Write like a funnel from general to specific
+Asthma is a chronic lung condition that can cause the airways to become
+inflamed at times making it harder to breathe. It is a very common
+condition in the United States. According to the CDC, about 1 in 13
+people have asthma in the United States (CDC, 2025). Asthma symptoms can
+be triggered by many things, including pollen, exercise, cold air, or
+air pollution.
+
+Air pollution can increase the risk of developing asthma and as well as
+making symptoms worse if a person already has asthma. The airborne
+particles that causes air pollution can irritate airways which triggers
+asthma symptoms (Asthma and Allergy Foundation of America).
+
+There is typically more air pollution in more highly populated regions.
+For this reason, we hypothesize that more urbanized regions with higher
+population density will be associated with higher asthma prevalence. The
+Northeastern United States are more highly populated than the West, so
+we predict that the Northeast will have a higher asthma prevalence.
 
 ``` r
 library(ggplot2)
@@ -86,13 +103,13 @@ population density.
 
 ### Procedure
 
-## Asthma Prevalence by State
+## Bar Plot Showing Asthma Prevalence by State
 
 ``` r
 library(ggplot2)
 
 ggplot(asthma_data, aes(x = reorder(state, prevalence), y = prevalence)) +
-  geom_col(fill = "steelblue") +
+  geom_col(fill = "darkgray") +
   coord_flip() +
   labs(title = "Asthma Prevalence by U.S. State",
        x = "State",
@@ -158,9 +175,9 @@ highest asthma prevalence
     Most recent asthma data. U.S. Department of Health and Human
     Services.
     <https://www.cdc.gov/asthma-data/about/most-recent-asthma-data.html>
-
-Look into these as possible sources
-<https://pmc.ncbi.nlm.nih.gov/articles/PMC3620776/?utm_source=chatgpt.com>
-<https://pmc.ncbi.nlm.nih.gov/articles/PMC3620776/?utm_source=chatgpt.com>
-<https://pubmed.ncbi.nlm.nih.gov/34606402/>
-<https://ij-healthgeographics.biomedcentral.com/articles/10.1186/s12942-023-00343-6?utm_source=chatgpt.com>
+3.  National Heart, Lung, and Blood Institute. (2025). Asthma. U.S.
+    Department of Health and Human Services.
+    <https://www.nhlbi.nih.gov/health/asthma>
+4.  Asthma and Allergy Foundation of America. (n.d.). Air pollution and
+    asthma. Asthma & Allergy Foundation of America.
+    <https://aafa.org/asthma/asthma-triggers-causes/air-pollution-smog-asthma/>
