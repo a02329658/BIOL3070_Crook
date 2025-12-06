@@ -83,7 +83,7 @@ Asthma is a chronic lung condition that can cause the airways to become inflamed
 
 Air pollution can increase the risk of developing asthma and as well as making symptoms worse if a person already has asthma. The airborne particles that causes air pollution can irritate airways which triggers asthma symptoms (Asthma and Allergy Foundation of America). 
 
-There is typically more air pollution in more highly populated regions. For this reason, we hypothesize that more urbanized regions with higher population density will be associated with higher asthma prevalence. The Northeastern United States are more highly populated than the West, so we predict that the Northeast will have a higher asthma prevalence.
+There is typically more air pollution in more highly populated regions. For this reason, we hypothesize that more urbanized regions with higher population density will be associated with higher asthma prevalence. The Northeastern United States are more highly populated than the West, so we predict that the Northeast will have a higher asthma prevalence. 
 
 
 ```{r prevalence by state, include=TRUE, eval=TRUE, warning=FALSE, fig.align='center', fig.width=6, fig.height=3}
