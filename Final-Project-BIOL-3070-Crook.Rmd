@@ -1,0 +1,257 @@
+---
+title: "Final Project: Asthma"
+author: "Whitney Crook"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: true
+---
+
+```{r setup and data, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+install.packages("car") # performs statistical tests
+install.packages("lme4") # runs statistical models with different kinds of data (counts; presence/absence)
+
+asthma_data <- data.frame(
+  state = c("Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+            "Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois",
+            "Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts",
+            "Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
+            "New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota",
+            "Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina",
+            "South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington",
+            "West Virginia","Wisconsin","Wyoming"),
+  
+  state_abrv = c("AL","AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"),
+  
+  number = c(378702,58742,555997,243032,2629546,500090,356651,
+             78980,60410,1646583,802783,103228,161970,856488,
+             574447,238689,237705,377365,351940,146031,499134,633126,
+             935666,434473,211055,497216,102617,121412,251193,
+             148330,644536,171212,1611027,764909,61944,
+             1042354,373879,389831,1033741,117252,368883,
+             56630,636322,1760654,266105,68112,671051,667228,
+             181395,503318,46973),
+  
+  prevalence_raw = c("9.6 (0.59)","10.7 (0.58)","9.7 (0.49)","10.5 (0.57)","8.7 (0.39)","10.8 (0.43)","12.4 (0.51)",
+                     "9.9 (0.64)","11.1 (0.77)","9.3 (0.53)","9.6 (0.48)","9.1 (0.45)","11.1 (0.51)","8.7 (0.58)",
+                     "11.0 (0.39)","9.7 (0.42)","10.7 (0.41)","10.8 (0.68)","10.0 (0.55)","13.1 (0.52)","10.4 (0.38)","11.3 (0.43)",
+                     "11.9 (0.44)","9.9 (0.32)","9.4 (0.63)","10.4 (0.49)","11.7 (0.51)","8.1 (0.46)","10.1 (0.79)",
+                     "13.1 (0.64)","8.9 (0.43)","10.4 (0.62)","10.3 (0.34)","9.2 (0.62)","10.4 (0.60)",
+                     "11.4 (0.38)","12.3 (0.54)","11.5 (0.51)","10.1 (0.67)","13.3 (0.64)","9.0 (0.40)",
+                     "8.3 (0.75)","11.7 (0.61)","7.9 (0.37)","11.0 (0.43)","12.9 (0.53)","9.9 (0.46)","10.9 (0.26)",
+                     "12.9 (0.61)","10.9 (0.42)","10.5 (0.65)"), 
+  
+  population = c(5108468, 733406, 7431344, 3067732, 38965193, 5877610, 3617176, 1031890, 678972,
+  22610726, 11029227, 1435138, 1964726, 12549689, 6862199, 3207004, 2940546,
+  4526154, 4573749, 1395722, 6180253, 7001399, 10037261, 5737915, 2939690,
+  6196156, 1132812, 1978379, 3194176, 1402054, 9290842, 2114371, 19571216,
+  10835491, 783926, 11785935, 4053824, 4233358, 12961683, 1095962, 5373555,
+  919318, 7126489, 30503301, 3417735, 647464, 8715698, 7812880, 1770071,
+  5910955, 584057),
+  
+  pop_density_sqmile = c(101,1.3,65,59,250,57,747,529,11131,422,192,223,24,226,192,57,36,115,106,45,637,898,178,72,63,90,7.8,26,29,157,1263,17,415,223,11,274,59,44,290,1060,179,12,173,117,42,70,221,118,74,109,6)
+)
+
+library(dplyr)
+library(stringr)
+library("car")
+library("lme4")
+library(ggplot2)
+library(maps)
+
+asthma_data <- asthma_data %>%
+  mutate(
+    prevalence = as.numeric(str_extract(prevalence_raw, "^[0-9.]+")),
+    SE = as.numeric(str_extract(prevalence_raw, "(?<=\\().+?(?=\\))")),
+    state_lower = tolower(state),
+    region = state.region[match(state, state.name)]
+  )
+
+asthma_data <- na.omit(asthma_data)
+
+```
+# ABSTRACT
+
+Write at the end. Summarize the study.
+
+# BACKGROUND
+
+Asthma is a chronic lung condition that can cause the airways to become inflamed at times making it harder to breathe. It is a very common condition in the United States. According to the CDC, about 1 in 13 people have asthma in the United States (CDC, 2025). Asthma symptoms can be triggered by many things, including pollen, exercise, cold air, or air pollution.
+
+Air pollution can increase the risk of developing asthma and as well as making symptoms worse if a person already has asthma. The airborne particles that causes air pollution can irritate airways which triggers asthma symptoms (Asthma and Allergy Foundation of America). 
+
+There is typically more air pollution in more highly populated regions. For this reason, we hypothesize that more urbanized regions with higher population density will be associated with higher asthma prevalence. The Northeastern United States are more highly populated than the West, so we predict that the Northeast will have a higher asthma prevalence.
+
+
+```{r prevalence by state, include=TRUE, eval=TRUE, warning=FALSE, fig.align='center', fig.width=6, fig.height=3}
+
+# Map data
+states_map <- map_data("state")
+
+# Merge map data with asthma data
+map_data <- states_map %>%
+  left_join(asthma_data, by = c("region" = "state_lower"))
+
+ggplot(map_data, aes(long, lat, group = group, fill = prevalence)) +
+  geom_polygon(color = "gray90", size = 0.3) +  # state borders
+  geom_polygon(aes(fill = prevalence), color = "white") +
+  coord_fixed(1.3) +
+ scale_fill_gradientn(
+  name = "Asthma Prevalence (%)",
+  colors = c("yellow2", "orange", "red", "red4")
+) +
+  labs(
+    title = "Asthma Prevalence by U.S. State"
+  ) +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12)
+  )
+
+```
+
+```{r region map, include=TRUE, eval=TRUE, warning=FALSE, fig.align='center', fig.width=6, fig.height=3}
+
+# U.S. states map data
+states_map <- map_data("state")
+
+# Put the states into regions in a dataframe
+state_regions <- data.frame(
+  state = tolower(state.name),
+  region = state.region
+)
+
+# Merge map data with region info
+map_data <- states_map %>%
+  left_join(state_regions, by = c("region" = "state"))
+
+# Plot
+ggplot(map_data, aes(x = long, y = lat, group = group, fill = region.y)) +
+  geom_polygon(color = "white") +
+  coord_fixed(1.3) +
+  labs(title = "U.S. Regions",
+       fill = "Region") +
+  theme_void()
+```
+These are the regional divisions used for this study.
+
+# STUDY QUESTION and HYPOTHESIS
+
+## Question  
+
+Does asthma prevalence differ across U.S. regions?
+
+## Hypothesis 
+
+Regions with higher population density and greater urbanization will be associated with higher asthma prevalence and mortality rates.
+  
+## Prediction
+
+We predict that the Northeastern United States will have a higher prevalence of asthma and asthma-related deaths because of the higher population density.
+
+# METHODS
+
+### Procedure
+
+## Boxplots by region showing population density and asthma (figures 1 and 2)
+
+To find the difference in asthma prevalence across regions of the United States, we will create two box plots comparing the population density per region and the asthma prevalence per region.
+
+```{r box plot, include=TRUE, eval=TRUE, warning=FALSE, fig.align='center', fig.width=4.75, fig.height=7}
+
+library(ggplot2)
+
+#Asthma prevalence v region
+ggplot(asthma_data, aes(x = region, y = prevalence, fill= region)) +
+  geom_boxplot() +
+  labs(title = "Asthma Prevalence by U.S. Region",
+       x = "Region",
+       y = "Asthma Prevalence (%)",
+       fill = "Region" ) +
+  theme_minimal()
+
+#Population density v region
+ggplot(asthma_data, aes(x = region, y = pop_density_sqmile, fill= region)) +
+  geom_boxplot() +
+  labs(title = "Population Density by U.S. Region",
+       x = "Region",
+       y = "Population Density (square mile)",
+       fill = "Region") +
+  theme_minimal()
+
+```
+
+## ANOVA Test
+
+We will run two ANOVA tests. The first test is for state population density against asthma prevalence. The second test is for region population density against asthma prevalence.
+
+```{r ANOVA for state population density and asthma prevalence, eval=TRUE}
+
+# load necessary libraries
+
+library("car")
+library("lme4")
+
+# create a linear model for population density per square mile and asthma prevalence by state
+
+m1 <- lm(prevalence ~ pop_density_sqmile, data=asthma_data)
+
+# perform statistical test
+
+Anova(m1)
+summary(m1)
+
+```
+```{r ANOVA for region population density and asthma prevalence, eval=TRUE}
+
+# create a linear model for average population density per region and asthma prevalence
+
+r1 <- lm(prevalence ~ region, data=asthma_data)
+
+# perform statistical test
+
+Anova(r1)
+summary(r1)
+
+```
+
+# DISCUSSION
+
+## Interpretation - Box plots (figures 1 and 2)
+
+These bar plots provides some support for our hypothesis that asthma prevalence will vary by region of the United States. We can see that the region with the highest population density--the Northeast-- also has the highest prevalence of asthma. There is an obvious variation in asthma prevalence based on region but it is important to note that the percentage of people with asthma are not extremely different. The range of percentages for asthma prevalence is just below 10% for the lowest region and just above 12% for the highest region. The correlation between a higher population density and a higher asthma prevalence only seems to be true for the Northeast. The region with the second highest asthma percentage is the West but the West has the lowest population density. For our hypothesis to be fully supported by these plots, we would see both of them follow the same trend of the highest/lowest regions for population density would also be the highest/lowest region for asthma prevalence.
+
+## Interpretation - ANOVA results
+
+We ran two ANOVA tests. The first is to see if there is a significant difference in asthma prevalence by state when compared with population density. The results for this first ANOVA of 0.667 which is not significant meaning that there is not a significant correlation between asthma prevalence and population density when comparing by state. 
+
+The second ANOVA test we ran was comparing the population density by region to asthma prevalence. This test did have a significant p-value of 0.0192. This results supports our hypothesis that asthma prevalence varies by region because there is a significant different between the regions.
+
+# CONCLUSION
+
+In conclusion, there is a slight correlation between population density and asthma prevalence. It is not a strong correlation as shown by the ANOVA test comparing between states but there is a significant enough difference by region to say that there is a correlation when comparing by region. Our hypothesis that asthma prevalence varies by region is supported by our results. There is room for further study to see what factors, other than population density, affect asthma prevalence.
+
+# REFERENCES     
+
+1. ChatGPT. OpenAI, version Jan 2025. Used as a reference for functions
+    such as ggplot(), creating the figures and troubleshooting error messages. Accessed 2025-11-10.
+2. Centers for Disease Control and Prevention. (2024, November 21). Most recent asthma data. U.S. Department of Health and Human Services. https://www.cdc.gov/asthma-data/about/most-recent-asthma-data.html
+3. National Heart, Lung, and Blood Institute. (2025). Asthma. U.S. Department of Health and Human Services. https://www.nhlbi.nih.gov/health/asthma
+4. Asthma and Allergy Foundation of America. (n.d.). Air pollution and asthma. Asthma & Allergy Foundation of America. https://aafa.org/asthma/asthma-triggers-causes/air-pollution-smog-asthma/
+5. Kudo, M., Ishigatsubo, Y., & Aoki, I. (2013, September 9). Pathology of asthma. Frontiers. https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2013.00263/full 
+6. National Heart, Lung, and Blood Institute. (2025). Asthma. U.S. Department of Health and Human Services. https://www.nhlbi.nih.gov/health/asthma
+7. Paciência, I., & Cavaleiro Rufo, J. (2020). Urban-level environmental factors related to pediatric asthm... : Porto Biomedical Journal. https://journals.lww.com/pbj/FullText/2020/02000/Urban_level_environmental_factors_related_to.2.aspx
+8. Sockrider, M., & Fussner, L. (2020). What is asthma? | American Journal of Respiratory and Critical Care Medicine. https://www.atsjournals.org/doi/10.1164/rccm.2029P25 
+9. Win, P. H., & Hussain, I. (2009, May 22). Asthma triggers: What really matters?. Clinical Asthma. https://pmc.ncbi.nlm.nih.gov/articles/PMC7152189/
+
+
+
+
+
+
+

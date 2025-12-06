@@ -73,7 +73,7 @@ ggplot(map_data, aes(long, lat, group = group, fill = prevalence)) +
   )
 ```
 
-<img src="Final-Project-BIOL-3070-Crook_files/figure-gfm/prevalence by state-1.png" style="display: block; margin: auto;" />
+<img src="Final-Project-Asthma-Crook_files/figure-gfm/prevalence by state-1.png" style="display: block; margin: auto;" />
 
 ``` r
 # U.S. states map data
@@ -98,7 +98,7 @@ ggplot(map_data, aes(x = long, y = lat, group = group, fill = region.y)) +
   theme_void()
 ```
 
-<img src="Final-Project-BIOL-3070-Crook_files/figure-gfm/region map-1.png" style="display: block; margin: auto;" />
+<img src="Final-Project-Asthma-Crook_files/figure-gfm/region map-1.png" style="display: block; margin: auto;" />
 These are the regional divisions used for this study.
 
 # STUDY QUESTION and HYPOTHESIS
@@ -124,9 +124,9 @@ population density.
 
 ## Boxplots by region showing population density and asthma (figures 1 and 2)
 
-To find the difference in asthma prevelance across regions of the United
-States, we will create two boxplots comparing the population density per
-region and the asthma prevelance per region.
+To find the difference in asthma prevalence across regions of the United
+States, we will create two box plots comparing the population density
+per region and the asthma prevalence per region.
 
 ``` r
 library(ggplot2)
@@ -141,7 +141,7 @@ ggplot(asthma_data, aes(x = region, y = prevalence, fill= region)) +
   theme_minimal()
 ```
 
-<img src="Final-Project-BIOL-3070-Crook_files/figure-gfm/box plot-1.png" style="display: block; margin: auto;" />
+<img src="Final-Project-Asthma-Crook_files/figure-gfm/box plot-1.png" style="display: block; margin: auto;" />
 
 ``` r
 #Population density v region
@@ -154,9 +154,13 @@ ggplot(asthma_data, aes(x = region, y = pop_density_sqmile, fill= region)) +
   theme_minimal()
 ```
 
-<img src="Final-Project-BIOL-3070-Crook_files/figure-gfm/box plot-2.png" style="display: block; margin: auto;" />
+<img src="Final-Project-Asthma-Crook_files/figure-gfm/box plot-2.png" style="display: block; margin: auto;" />
 
 ## ANOVA Test
+
+We will run two ANOVA tests. The first test is for state population
+density against asthma prevalence. The second test is for region
+population density against asthma prevalence.
 
 ``` r
 # load necessary libraries
